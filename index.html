@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ابنِ موقعك - المستوى الأول</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        #instructions {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #eef;
+            border: 1px solid #ccc;
+            width: 70%;
+        }
+        textarea {
+            width: 60%;
+            height: 200px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        #output {
+            border: 1px solid #ddd;
+            width: 70%;
+            min-height: 100px;
+            padding: 10px;
+            background-color: #fff;
+            white-space: pre-wrap; /* Ensures HTML formatting is displayed */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>المستوى الأول: ابنِ صفحتك الأولى</h1>
+    <div id="instructions">
+        <p>مرحباً بك في التحدي الأول! لبدء بناء صفحتك الخاصة، اتبع التعليمات التالية:</p>
+        <p><strong>التعليمات:</strong> اكتب كود HTML يحتوي على عنوان (h1)، وفقرة (p)، وصورة (img) تحت النص. بعد كتابة الكود، يمكنك رؤية النتيجة في الصندوق أدناه!</p>
+    </div>
+
+    <textarea id="html-code" placeholder="اكتب كود HTML هنا..."></textarea>
+    <button onclick="renderOutput()">تنفيذ</button>
+
+    <div id="output"></div>
+
+    <script>
+        function renderOutput() {
+            var code = document.getElementById('html-code').value;
+            document.getElementById('output').innerHTML = code;
+        }
+    </script>
+
+</body>
+</html>
