@@ -3,66 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ابنِ موقعك - المستوى الأول</title>
+    <title>لوحة تحكم مؤسسة ولاء المستقبل للمقاولات</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             direction: rtl;
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f9;
+            background-color: #f5f5f5;
         }
-        h1 {
-            color: #333;
+        h1, h2 {
+            text-align: center;
         }
-        #instructions {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #eef;
-            border: 1px solid #ccc;
-            width: 70%;
-        }
-        textarea {
-            width: 60%;
-            height: 200px;
-            margin-bottom: 20px;
-            font-family: monospace;
-        }
-        #output {
-            border: 1px solid #ddd;
-            width: 70%;
-            min-height: 100px;
-            padding: 10px;
+        .section {
             background-color: #fff;
-            white-space: pre-wrap; /* Ensures HTML formatting is displayed */
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: inline-block;
+            margin: 5px 0;
+        }
+        input, select, button {
+            padding: 5px;
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
         }
     </style>
 </head>
 <body>
+    <h1>لوحة تحكم مؤسسة ولاء المستقبل للمقاولات</h1>
 
-    <h1>المستوى الأول: ابنِ صفحتك الأولى</h1>
-    <div id="instructions">
-        <p>مرحباً بك في التحدي الأول! لبدء بناء صفحتك الخاصة، اتبع التعليمات التالية:</p>
-        <p><strong>التعليمات:</strong> اكتب كود HTML يحتوي على عنوان (h1)، وفقرة (p)، وصورة (img) تحت النص. بعد كتابة الكود، يمكنك رؤية النتيجة في الصندوق أدناه!</p>
+    <div class="section" id="projects-section">
+        <h2>المشاريع</h2>
+        <label for="project-name">اسم المشروع:</label>
+        <input type="text" id="project-name">
+        <button onclick="addProject()">إضافة مشروع</button>
+
+        <table id="projects-table">
+            <thead>
+                <tr><th>الرقم</th><th>اسم المشروع</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
-    <textarea id="html-code" placeholder="اكتب كود HTML هنا..."></textarea>
-    <button onclick="renderOutput()">تنفيذ</button>
+    <div class="section" id="equipment-section">
+        <h2>المعدات</h2>
+        <label for="equip-name">اسم المعدة:</label>
+        <input type="text" id="equip-name">
+        <label for="equip-project">المشروع:</label>
+        <select id="equip-project"></select>
+        <button onclick="addEquipment()">إضافة معدة</button>
 
-    <div id="output"></div>
+        <table id="equipment-table">
+            <thead>
+                <tr><th>الرقم</th><th>اسم المعدة</th><th>المشروع</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="section" id="employees-section">
+        <h2>الموظفون</h2>
+        <label for="emp-name">اسم الموظف:</label>
+        <input type="text" id="emp-name">
+        <label for="emp-project">المشروع:</label>
+        <select id="emp-project" onchange="updateEquipSelect()"></select>
+        <label for="emp-equip">المعدة:</label>
+        <select id="emp-equip"></select>
+        <button onclick="addEmployee()">إضافة موظف</button>
+
+        <table id="employees-table">
+            <thead>
+                <tr><th>الرقم</th><th>اسم الموظف</th><th>المشروع</th><th>المعدة</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
     <script>
-        function renderOutput() {
-            var code = document.getElementById('html-code').value;
-            document.getElementById('output').innerHTML = code;
-        }
-    </script>
+        const projects = JSON.parse(localStorage.getItem('projects') || '[]');
+        const equipment = JSON.parse(localStorage.getItem('equipment') || '[]');
+        const employees = JSON.parse(localStorage.getItem('employees') || '[]');
 
+        function saveData() {
+            localStorage.setItem('projects', JSON.stringify(projects));
+            localStorage.setItem('equipment', JSON.stringify(equipment));
+            localStorage.setItem('employees', JSON.stringify(employees));
+        }
+
+        function renderProjects() {
+            const tbody = document.querySelector('#projects-table tbody');
+            tbody.innerHTML = '';
+            projects.forEach((p, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx+1}</td><td>${p.name}</td>`;
+                tbody.appendChild(tr);
+            });
+            const selectProject = document.getElementById('equip-project');
+            const selectEmpProject = document.getElementById('emp-project');
+            selectProject.innerHTML = '';
+            selectEmpProject.innerHTML = '';
+            projects.forEach(p => {
+                const opt1 = document.createElement('option');
+                opt1.value = p.id;
+                opt1.textContent = p.name;
+                const opt2 = opt1.cloneNode(true);
+                selectProject.appendChild(opt1);
+                selectEmpProject.appendChild(opt2);
+            });
+            updateEquipSelect();
+        }
+
+        function renderEquipment() {
+            const tbody = document.querySelector('#equipment-table tbody');
+            tbody.innerHTML = '';
+            equipment.forEach((e, idx) => {
+                const project = projects.find(p => p.id === e.projectId) || {name:''};
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx+1}</td><td>${e.name}</td><td>${project.name}</td>`;
+                tbody.appendChild(tr);
+            });
+            updateEquipSelect();
+        }
+
+        function renderEmployees() {
+            const tbody = document.querySelector('#employees-table tbody');
+            tbody.innerHTML = '';
+            employees.forEach((emp, idx) => {
+                const project = projects.find(p => p.id === emp.projectId) || {name:''};
+                const equip = equipment.find(eq => eq.id === emp.equipmentId) || {name:''};
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${idx+1}</td><td>${emp.name}</td><td>${project.name}</td><td>${equip.name}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addProject() {
+            const name = document.getElementById('project-name').value.trim();
+            if(!name) return;
+            const id = Date.now().toString();
+            projects.push({id, name});
+            document.getElementById('project-name').value = '';
+            saveData();
+            renderProjects();
+        }
+
+        function addEquipment() {
+            const name = document.getElementById('equip-name').value.trim();
+            const projectId = document.getElementById('equip-project').value;
+            if(!name || !projectId) return;
+            const id = Date.now().toString();
+            equipment.push({id, name, projectId});
+            document.getElementById('equip-name').value = '';
+            saveData();
+            renderEquipment();
+        }
+
+        function addEmployee() {
+            const name = document.getElementById('emp-name').value.trim();
+            const projectId = document.getElementById('emp-project').value;
+            const equipmentId = document.getElementById('emp-equip').value;
+            if(!name || !projectId || !equipmentId) return;
+            const id = Date.now().toString();
+            employees.push({id, name, projectId, equipmentId});
+            document.getElementById('emp-name').value = '';
+            saveData();
+            renderEmployees();
+        }
+
+        function updateEquipSelect() {
+            const projectId = document.getElementById('emp-project').value;
+            const equipSelect = document.getElementById('emp-equip');
+            equipSelect.innerHTML = '';
+            equipment.filter(eq => eq.projectId === projectId).forEach(eq => {
+                const opt = document.createElement('option');
+                opt.value = eq.id;
+                opt.textContent = eq.name;
+                equipSelect.appendChild(opt);
+            });
+        }
+
+        // Initial rendering
+        renderProjects();
+        renderEquipment();
+        renderEmployees();
+    </script>
 </body>
 </html>
